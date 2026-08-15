@@ -1,0 +1,192 @@
+/* index.css - Modus Soft Feminine Design System */
+
+:root {
+  /* Soft, Elegant, Girly Palette */
+  --bg-app: #FBF8F6;               /* Very light warm cream background */
+  --bg-card: #FFFFFF;              /* Clean white cards */
+  --bg-card-hover: #FAF6F8;        /* Subtle soft tint on hover */
+  --bg-subtle: #F5EEF4;            /* Soft mauve/lavender tint */
+  --bg-accent-soft: #F9EFF3;       /* Muted dusty rose tint */
+
+  /* Text Colors */
+  --text-primary: #332735;         /* Dark mauve charcoal for main text */
+  --text-secondary: #6E5C70;       /* Muted dusty plum for body/labels */
+  --text-muted: #9E8C9F;           /* Soft muted plum for secondary info */
+
+  /* Accent Colors */
+  --accent-purple: #8E6C8F;        /* Subtle dark purple for brand & primary buttons */
+  --accent-purple-hover: #7A5B7B;  /* Deeper purple hover state */
+  --accent-pink: #D8A7B1;          /* Muted dusty rose */
+  --accent-lavender: #E2D5E7;      /* Soft lavender */
+
+  /* Borders & Shadows */
+  --border-color: #EBE4EC;         /* Soft dusty rose outline */
+  --border-focus: #D0B8D2;         /* Focused input border */
+  --shadow-soft: 0 2px 12px rgba(142, 108, 143, 0.06);
+  --shadow-hover: 0 4px 18px rgba(142, 108, 143, 0.10);
+
+  /* Typography */
+  --font-main: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Border Radius - Natural & Balanced */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* Transitions */
+  --transition-fast: all 0.2s ease;
+}
+
+/* CSS Reset & Global Styling */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Container */
+.app-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem 1.5rem;
+}
+
+/* Headings & Typography */
+h1, h2, h3, h4, h5 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.1rem; }
+
+p {
+  color: var(--text-secondary);
+}
+
+/* Button Component Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-main);
+  font-size: 0.925rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-purple);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-purple-hover);
+  box-shadow: 0 4px 12px rgba(142, 108, 143, 0.25);
+}
+
+.btn-secondary {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #EFE4EC;
+}
+
+.btn-danger {
+  background-color: #FFF0F2;
+  color: #C85A6E;
+  border-color: #F8D7DA;
+}
+
+.btn-danger:hover {
+  background-color: #FBDCE0;
+}
+
+/* Form Inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1.125rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-input, .form-select {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.875rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: #FFFFFF;
+  color: var(--text-primary);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(142, 108, 143, 0.12);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Card Container */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+/* Minimal Badge Style */
+.badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* SVG Icon Base Styling */
+.icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
