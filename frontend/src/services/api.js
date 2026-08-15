@@ -1,5 +1,5 @@
 // src/services/api.js - Centralized REST API Service for Modus
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper to handle HTTP responses and include credentials for session cookies
 async function handleRequest(endpoint, options = {}) {

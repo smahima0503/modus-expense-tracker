@@ -12,24 +12,42 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Middleware 1: CORS with Credentials
-// Allows frontend (React running on localhost:5173 or port 3000) to pass session cookies
+// Enable trust proxy for Render / hosted reverse proxies (Required for secure HTTPS cookies)
+app.set('trust proxy', 1);
+
+// Allowed origins for CORS (Development & Production Vercel domain)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true
 }));
 
 // Middleware 2: JSON Body Parser
 app.use(express.json());
 
-// Middleware 3: Simple Server-Side Session Storage (express-session)
+// Middleware 3: Express Session (Cookie settings adjusted for production HTTPS cross-origin)
 app.use(session({
   secret: process.env.SESSION_SECRET || 'modus_secret_key_2026',
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   cookie: {
-    secure: false, // http in local development
+    secure: isProduction, // Requires HTTPS in production
+    sameSite: isProduction ? 'none' : 'lax', // Cross-site cookies between Vercel and Render in production
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // Session valid for 24 hours
   }
@@ -57,7 +75,7 @@ app.use((err, req, res, next) => {
 
 // Start Server and test database pool connection
 app.listen(PORT, async () => {
-  console.log(`Modus server is running on http://localhost:${PORT}`);
+  console.log(`Modus server is running on port ${PORT}`);
   await testConnection();
 });
 
