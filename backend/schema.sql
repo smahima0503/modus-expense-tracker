@@ -4,22 +4,26 @@
 CREATE DATABASE IF NOT EXISTS modus_db;
 USE modus_db;
 
--- Expenses table without notes field
+-- 1. Users table (stores hashed passwords, never plain text)
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Expenses table linked to users via foreign key
 CREATE TABLE IF NOT EXISTS expenses (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     category VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Starter sample data to test SQL queries and dashboard
-INSERT INTO expenses (title, amount, category, date) VALUES
-('Organic Groceries', 64.50, 'Food & Dining', '2026-08-01'),
-('Monthly Metro Pass', 45.00, 'Transport', '2026-08-03'),
-('Soft Linen Cushion Cover', 28.00, 'Shopping', '2026-08-05'),
-('Electricity & Water Bill', 82.30, 'Utilities', '2026-08-08'),
-('Indie Cinema Ticket', 14.50, 'Entertainment', '2026-08-10'),
-('Matcha Latte & Pastry', 12.00, 'Food & Dining', '2026-08-12'),
-('Skincare Refill', 34.00, 'Personal Care', '2026-08-14');
+-- Note: Seed data insertion has been removed completely.
+-- Database initialization creates database & tables only.

@@ -1,11 +1,25 @@
-// src/services/api.js - Centralized API Service for Modus REST Endpoints
-const API_BASE_URL = '/api/expenses';
+// src/services/api.js - Centralized REST API Service for Modus
+const API_BASE_URL = '/api';
 
-// Helper to handle API responses and throw informative errors
-async function handleResponse(response) {
+// Helper to handle HTTP responses and include credentials for session cookies
+async function handleRequest(endpoint, options = {}) {
+  const defaultHeaders = {
+    'Content-Type': 'application/json'
+  };
+
+  const config = {
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers
+    },
+    credentials: 'include' // Always pass session cookie (connect.sid)
+  };
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
   const contentType = response.headers.get('content-type');
   let data = {};
-  
+
   if (contentType && contentType.includes('application/json')) {
     data = await response.json();
   }
@@ -18,46 +32,76 @@ async function handleResponse(response) {
   return data;
 }
 
-// 1. GET /api/expenses (with optional category filter)
-export async function getExpenses(category = 'All') {
-  const url = category && category !== 'All' 
-    ? `${API_BASE_URL}?category=${encodeURIComponent(category)}`
-    : API_BASE_URL;
+// -------------------------------------------------------------
+// Authentication Endpoints
+// -------------------------------------------------------------
 
-  const response = await fetch(url);
-  return await handleResponse(response);
-}
-
-// 2. GET /api/expenses/summary (SQL Aggregation SUM, COUNT, GROUP BY)
-export async function getSummary() {
-  const response = await fetch(`${API_BASE_URL}/summary`);
-  return await handleResponse(response);
-}
-
-// 3. POST /api/expenses (Add Expense)
-export async function createExpense(expenseData) {
-  const response = await fetch(API_BASE_URL, {
+// 1. POST /api/auth/register
+export async function registerUser({ name, email, password }) {
+  return await handleRequest('/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(expenseData)
+    body: JSON.stringify({ name, email, password })
   });
-  return await handleResponse(response);
 }
 
-// 4. PUT /api/expenses/:id (Update Expense)
+// 2. POST /api/auth/login
+export async function loginUser({ email, password }) {
+  return await handleRequest('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+}
+
+// 3. POST /api/auth/logout
+export async function logoutUser() {
+  return await handleRequest('/auth/logout', {
+    method: 'POST'
+  });
+}
+
+// 4. GET /api/auth/me
+export async function getMe() {
+  return await handleRequest('/auth/me', {
+    method: 'GET'
+  });
+}
+
+// -------------------------------------------------------------
+// Expense Endpoints (User Data Isolated)
+// -------------------------------------------------------------
+
+// 5. GET /api/expenses
+export async function getExpenses(category = 'All') {
+  const url = category && category !== 'All'
+    ? `/expenses?category=${encodeURIComponent(category)}`
+    : '/expenses';
+  return await handleRequest(url, { method: 'GET' });
+}
+
+// 6. GET /api/expenses/summary
+export async function getSummary() {
+  return await handleRequest('/expenses/summary', { method: 'GET' });
+}
+
+// 7. POST /api/expenses
+export async function createExpense(expenseData) {
+  return await handleRequest('/expenses', {
+    method: 'POST',
+    body: JSON.stringify(expenseData)
+  });
+}
+
+// 8. PUT /api/expenses/:id
 export async function updateExpense(id, expenseData) {
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
+  return await handleRequest(`/expenses/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(expenseData)
   });
-  return await handleResponse(response);
 }
 
-// 5. DELETE /api/expenses/:id (Delete Expense)
+// 9. DELETE /api/expenses/:id
 export async function deleteExpense(id) {
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
+  return await handleRequest(`/expenses/${id}`, {
     method: 'DELETE'
   });
-  return await handleResponse(response);
 }
